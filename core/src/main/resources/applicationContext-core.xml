@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+	default-lazy-init="true">
+	<description>Spring公共配置 </description>
+	
+	 <!-- 引入properties文件  -->
+	 <context:property-placeholder ignore-unresolvable="true" location="classpath*:/dbconfig.properties" />
+	
+	<!-- 自动扫描添加Bean,去除@Controller的Bean -->
+	<context:component-scan base-package="com.asa">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<!-- Spring Data Jpa配置 -->
+	<jpa:repositories base-package="isa.qa" transaction-manager-ref="transactionManager"
+		entity-manager-factory-ref="entityManagerFactory" />
+		
+	<!-- JPA实体管理工厂的配置 -->
+    <bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter" />
+		<property name="packagesToScan" value="com.asa" /><!-- 待扫描的实体类包，不再需要persistence.xml了 -->
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- JPA处理懒加载配置 -->
+	<bean name="openEntityManagerInViewInterceptor" class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactory" />
+		</property>
+	</bean>
+	
+	<!--指定实现JPA的适配器 -->
+	<bean id="hibernateJpaVendorAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="generateDdl" value="false" />
+		<property name="database" value="MYSQL" />
+		<property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+	</bean>
+	
+	
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	<!-- Jpa 事务配置 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	
+	<!-- JSR303 Validator定义 -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" /> 
+
+    <!-- 上传文件中文配置 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	
+	<!-- 数据源配置, 使用DBCP数据库连接池 -->
+	<beans profile="development">
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="${development.driverClassName}" />
+			<property name="url" value="${development.url}" />
+			<property name="username" value="${development.username}" />
+			<property name="password" value="${development.password}" />
+			<property name="maxActive" value="${development.maxActive}" />
+			<property name="maxIdle" value="${development.maxIdle}" />
+			<property name="maxWait" value="${development.maxWait}" />
+			<property name="defaultAutoCommit" value="${development.defaultAutoCommit}" />
+			<property name="timeBetweenEvictionRunsMillis" value="3600000" />
+			<property name="minEvictableIdleTimeMillis" value="3600000" />
+		</bean>
+	</beans>
+	
+	<!-- 测试环境 -->
+	<beans profile="test">
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="${test.driverClassName}" />
+			<property name="url" value="${test.url}" />
+			<property name="username" value="${test.username}" />
+			<property name="password" value="${test.password}" />
+			<property name="maxActive" value="${test.maxActive}" />
+			<property name="maxIdle" value="${test.maxIdle}" />
+			<property name="maxWait" value="${test.maxWait}" />
+			<property name="defaultAutoCommit" value="${test.defaultAutoCommit}" />
+			<property name="timeBetweenEvictionRunsMillis" value="3600000" />
+			<property name="minEvictableIdleTimeMillis" value="3600000" />
+		</bean>
+	</beans>
+	
+	<!-- 文件上传下载配置 -->
+    <beans>
+		<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+			<property name="messageConverters">
+				<list>
+					<bean
+						class="org.springframework.http.converter.StringHttpMessageConverter">
+						<property name="writeAcceptCharset" value="false" />
+						<property name="supportedMediaTypes">
+							<list>
+								<value>text/plain;charset=UTF-8</value>
+							</list>
+						</property>
+					</bean>
+					<bean
+						class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+					<bean id="mappingJacksonHttpMessageConverter"
+						class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+						<property name="supportedMediaTypes">
+							<list>
+								<value>application/json;charset=UTF-8</value>
+							</list>
+						</property>
+					</bean>
+				</list>
+			</property>
+		</bean>
+	</beans>
+	
+</beans>

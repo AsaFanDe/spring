@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bean头部 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+             http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd              
+             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+             http://www.springframework.org/schema/aop   
+           	 http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+	<mvc:annotation-driven />
+	
+	<!-- 对包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 需要更改 -->
+	<context:component-scan base-package="com.asa.controller" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		
+	</context:component-scan>
+     
+	<!-- 用于返回json格式 -->
+    <bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">    
+	    <property name="supportedMediaTypes">    
+	        <list>
+	            <value>application/x-www-form-urlencoded;charset=UTF-8</value>
+	    	</list>
+	    </property>
+	</bean>
+ 
+ 	<!-- 完成请求和注解POJO的映射 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+     	<property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+
+	<!-- 用于支持Servlet、JSP视图解析 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 查找视图页面的前缀和后缀 -->
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".html" />
+	</bean>
+	
+	<!-- 总错误处理-->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+		<property name="defaultErrorView">
+			<value>/base/error</value>
+		</property>
+		<property name="defaultStatusCode">
+			<value>500</value>
+		</property>
+		<property name="warnLogCategory">
+			<value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver</value>  
+		</property>
+	</bean>
+	
+	<!-- 权限拦截处理
+	<mvc:interceptors>
+		<bean class="isa.qa.boquma.admin.common.AllInterceptor" />
+	</mvc:interceptors> -->
+
+	<!-- 静态资源加载 -->
+	<mvc:resources location="/css/" mapping="/css/**" />
+	
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/ATTACHMENT/" mapping="/ATTACHMENT/**" />
+	
+	<bean  class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">  
+	    <property name="interceptors">  
+	        <list>  
+	            <ref bean="openEntityManagerInViewInterceptor" />  
+	        </list>  
+	    </property>   
+	</bean>  
+	<aop:aspectj-autoproxy proxy-target-class="true"/>  
+    <bean class="com.asa.core.aspect.LogAspect" />  
+</beans>
