@@ -8,7 +8,7 @@
         <dependent-module archiveName="application-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/application/application">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="user-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/user/user">
+        <dependent-module archiveName="data-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/data/data">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="core-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">

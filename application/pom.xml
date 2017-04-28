@@ -7,15 +7,14 @@
   </parent>
   <artifactId>application</artifactId>
   <name>application</name>
-  <description>应用模块:控制管理其它模块</description>
+  <description>应用层</description>
   
-   <!-- 定义依赖包 -->
+    <!-- 定义依赖包 -->
   <dependencies>
 	   <dependency>
 	    	<groupId>asa.spring.test</groupId>
-	    	<artifactId>user</artifactId>
+	    	<artifactId>data</artifactId>
 	    	<version>${project.version}</version>
 	    </dependency>
   </dependencies>
-  
 </project>

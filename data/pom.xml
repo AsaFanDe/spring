@@ -5,9 +5,9 @@
     <artifactId>spring</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>user</artifactId>
-  <name>user</name>
-  <description>用户模块：用户信息、用户权限等</description>
+  <artifactId>data</artifactId>
+  <name>data</name>
+  <description>数据层</description>
   
     <!-- 定义依赖包 -->
   <dependencies>

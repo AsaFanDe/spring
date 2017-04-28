@@ -23,7 +23,7 @@
 	</context:component-scan>
 	
 	<!-- Spring Data Jpa配置 -->
-	<jpa:repositories base-package="isa.qa" transaction-manager-ref="transactionManager"
+	<jpa:repositories base-package="com.asa" transaction-manager-ref="transactionManager"
 		entity-manager-factory-ref="entityManagerFactory" />
 		
 	<!-- JPA实体管理工厂的配置 -->

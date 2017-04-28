@@ -11,7 +11,7 @@
   	<module>admin</module>
   	<module>core</module>
   	<module>application</module>
-  	<module>user</module>
+  	<module>data</module>
   </modules>
   
    <!-- 定义相关属性 -->
@@ -162,6 +162,11 @@
 			<groupId>net.sf.ezmorph</groupId>
 			<artifactId>ezmorph</artifactId>
 			<version>1.0.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.3.2</version>
 		</dependency>
 		<!-- apache commons end -->
 		

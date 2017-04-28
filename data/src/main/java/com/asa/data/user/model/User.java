@@ -1,8 +1,7 @@
-package com.asa.user.model;
+package com.asa.data.user.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,51 +9,30 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.GenericGenerator;
 
-/** * @author  作者 : 范德胜
-  * @date 创建时间：2017年4月20日 下午3:24:04
-  * @version 1.0 
-  * 用户类
-  */
-
-@Table
 @Entity
+@Table(uniqueConstraints={
+		@UniqueConstraint(columnNames ={"username"},name="username")
+})
 public class User implements Serializable{
-
-	private static final long serialVersionUID = 4527678083260042291L;
-
-	/*@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid",strategy="uuid")
-	private String id;*/
 	
+	private static final long serialVersionUID = -6942566981306814530L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	/**
-	 * 用户名
-	 */
 	@Column(length=32,nullable=false)
 	private String username;
 	
-	/**
-	 * 密码
-	 */
 	@Column(length=32,nullable=false)
 	private String password;
 	
-	/**
-	 * 创建时间
-	 */
 	@Column
 	private Date createTime;
 	
-	/**
-	 * 修改时间
-	 */
 	@Column
 	private Date modifyTime;
 
@@ -107,16 +85,13 @@ public class User implements Serializable{
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
-	
-	public void setString(String[] string){
-		System.out.println(string.length);
-	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
@@ -134,13 +109,13 @@ public class User implements Serializable{
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", createTime=" + createTime
-				+ ", modifyTime=" + modifyTime + "]";
-	}
 	
 }

@@ -89,8 +89,8 @@
         <param-name>cors.allowed.headers</param-name>
         <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization</param-value>
     </init-param>     
-</filter>
-    <filter>
+   </filter>
+   <filter>
 	   <filter-name>springSecurityFilterChain</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
@@ -176,7 +176,7 @@
   <session-config> 
       <session-timeout>300</session-timeout> 
   </session-config>
-  
+  <!-- 设置欢迎页面 -->
   <welcome-file-list>
     <welcome-file>/index.html</welcome-file>
   </welcome-file-list>
